@@ -13,7 +13,14 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class MerchantRouter {
     @Bean
     public RouterFunction<ServerResponse> payInCallBack(MerchantHandler merchantHandler) {
-
         return RouterFunctions.route(POST("/payInCallBack").and(accept(MediaType.APPLICATION_FORM_URLENCODED)), merchantHandler::payInCallBack);
+    }
+    @Bean
+    public RouterFunction<ServerResponse> payInWebhook(MerchantHandler merchantHandler) {
+        return RouterFunctions.route(POST("/payInWebhook").and(accept(MediaType.APPLICATION_JSON)), merchantHandler::payInWebhook);
+    }
+    @Bean
+    public RouterFunction<ServerResponse> payOutWebhook(MerchantHandler merchantHandler) {
+        return RouterFunctions.route(POST("/payOutWebhook").and(accept(MediaType.APPLICATION_JSON)), merchantHandler::payOutWebhook);
     }
 }

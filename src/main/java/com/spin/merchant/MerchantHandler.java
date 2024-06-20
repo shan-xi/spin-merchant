@@ -84,12 +84,44 @@ public class MerchantHandler {
                     return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(convert(new String(decValue)));
                 });
     }
+
+    public Mono<ServerResponse> payInWebhook(ServerRequest serverRequest) {
+        log.info("payInWebhook");
+        return serverRequest.bodyToMono(PayInWebhookMessage.class)
+                .doOnNext(message -> {
+                    // Process the received message
+                    log.info("Processing PayInWebhookMessage: {}", message);
+                })
+                .flatMap(message -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue("payInWebhook processed successfully"))
+                .onErrorResume(e -> {
+                    log.error("Error processing payInWebhook", e);
+                    return ServerResponse.badRequest()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue("Invalid request payload");
+                });
+    }
+
+    public Mono<ServerResponse> payOutWebhook(ServerRequest serverRequest) {
+        log.info("payOutWebhook");
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue("payOutWebhook received");
+    }
+
     public record CallBackMessage(
             @JsonProperty("PAY_ID") String payId,
             @JsonProperty("ENCDATA") String encData,
             @JsonProperty("RESPONSE_CODE") String responseCode,
             @JsonProperty("ORDER_ID") String orderId,
             @JsonProperty("RESPONSE_MESSAGE") String responseMessage
+    ) { }
+
+    public record PayInWebhookMessage(
+            @JsonProperty("PAY_ID") String payId,
+            @JsonProperty("AMOUNT") String encData,
+            @JsonProperty("STATUS") String responseCode,
+            @JsonProperty("ORDER_ID") String orderId,
+            @JsonProperty("PG_REF_NUM") String pgRefNum
     ) { }
 
     private String convert(String data){
