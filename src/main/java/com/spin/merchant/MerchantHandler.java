@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -27,6 +29,8 @@ import java.util.Map;
 
 @Component
 public class MerchantHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(MerchantHandler.class);
 
     public Mono<ServerResponse> payInCallBack(ServerRequest request) {
 
@@ -60,16 +64,12 @@ public class MerchantHandler {
                     Cipher cipher = null;
                     try {
                         cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-                    } catch (NoSuchAlgorithmException e) {
-                        throw new RuntimeException(e);
-                    } catch (NoSuchPaddingException e) {
+                    } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
                         throw new RuntimeException(e);
                     }
                     try {
                         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(generatedKey.getBytes(), "AES"), iv);
-                    } catch (InvalidKeyException e) {
-                        throw new RuntimeException(e);
-                    } catch (InvalidAlgorithmParameterException e) {
+                    } catch (InvalidKeyException | InvalidAlgorithmParameterException e) {
                         throw new RuntimeException(e);
                     }
 
@@ -77,84 +77,25 @@ public class MerchantHandler {
                     byte[] decValue = null;
                     try {
                         decValue = cipher.doFinal(decodedData);
-                    } catch (IllegalBlockSizeException e) {
-                        throw new RuntimeException(e);
-                    } catch (BadPaddingException e) {
+                    } catch (IllegalBlockSizeException | BadPaddingException e) {
                         throw new RuntimeException(e);
                     }
 
                     return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(convert(new String(decValue)));
                 });
     }
-    public static class Message {
-        @JsonProperty("PAY_ID")
-        private String payId;
-        @JsonProperty("ENCDATA")
-        private String encData;
-        @JsonProperty("RESPONSE_CODE")
-        private String responseCode;
-        @JsonProperty("ORDER_ID")
-        private String orderId;
-        @JsonProperty("RESPONSE_MESSAGE")
-        private String responseMessage;
-
-        public String getPayId() {
-            return payId;
-        }
-
-        public void setPayId(String payId) {
-            this.payId = payId;
-        }
-
-        public String getEncData() {
-            return encData;
-        }
-
-        public void setEncData(String encData) {
-            this.encData = encData;
-        }
-
-        public String getResponseCode() {
-            return responseCode;
-        }
-
-        public void setResponseCode(String responseCode) {
-            this.responseCode = responseCode;
-        }
-
-        public String getOrderId() {
-            return orderId;
-        }
-
-        public void setOrderId(String orderId) {
-            this.orderId = orderId;
-        }
-
-        public String getResponseMessage() {
-            return responseMessage;
-        }
-
-        public void setResponseMessage(String responseMessage) {
-            this.responseMessage = responseMessage;
-        }
-
-        @Override
-        public String toString() {
-            return "Message{" +
-                    "payId='" + payId + '\'' +
-                    ", encData='" + encData + '\'' +
-                    ", responseCode='" + responseCode + '\'' +
-                    ", orderId='" + orderId + '\'' +
-                    ", responseMessage='" + responseMessage + '\'' +
-                    '}';
-        }
-    }
+    public record CallBackMessage(
+            @JsonProperty("PAY_ID") String payId,
+            @JsonProperty("ENCDATA") String encData,
+            @JsonProperty("RESPONSE_CODE") String responseCode,
+            @JsonProperty("ORDER_ID") String orderId,
+            @JsonProperty("RESPONSE_MESSAGE") String responseMessage
+    ) { }
 
     private String convert(String data){
-        String keyValueString = data;
 
         // Split the string into key-value pairs
-        String[] pairs = keyValueString.split("~");
+        String[] pairs = data.split("~");
 
         // Create a map to store the key-value pairs
         Map<String, String> map = new HashMap<>();
@@ -170,10 +111,9 @@ public class MerchantHandler {
         // Convert the map to a JSON string using Jackson
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String jsonString = gson.toJson(map);
-            return jsonString;
+            return gson.toJson(map);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("error: ", e);
         }
         return "";
     }

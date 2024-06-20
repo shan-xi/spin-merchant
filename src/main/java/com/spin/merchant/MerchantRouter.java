@@ -12,10 +12,8 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration(proxyBeanMethods = false)
 public class MerchantRouter {
     @Bean
-    public RouterFunction<ServerResponse> merchantRoute(MerchantHandler merchantHandler) {
+    public RouterFunction<ServerResponse> payInCallBack(MerchantHandler merchantHandler) {
 
-        return RouterFunctions
-                .route(POST("/payInCallBack")
-                        .and(accept(MediaType.APPLICATION_FORM_URLENCODED)), merchantHandler::payInCallBack);
+        return RouterFunctions.route(POST("/payInCallBack").and(accept(MediaType.APPLICATION_FORM_URLENCODED)), merchantHandler::payInCallBack);
     }
 }
