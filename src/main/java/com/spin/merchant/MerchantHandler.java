@@ -3,7 +3,6 @@ package com.spin.merchant;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -13,17 +12,12 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,46 +36,15 @@ public class MerchantHandler {
                     System.out.println("Received payId: " + payId);
                     System.out.println("Received encData: " + encData);
 
-                    String keySalt = "cd9ee8b0395f4177";
-
-                    MessageDigest messageDigest = null;
+                    String parsedEncDataValue = "";
                     try {
-                        messageDigest = MessageDigest.getInstance("SHA-256");
-                    } catch (NoSuchAlgorithmException e) {
+                        parsedEncDataValue = EncDataUtil.decrypt(encData);
+                    } catch (IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException |
+                             NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException |
+                             InvalidKeyException e) {
                         throw new RuntimeException(e);
                     }
-                    messageDigest.update((keySalt + payId).getBytes());
-                    String response = new String(Hex.encodeHex(messageDigest.digest())).toUpperCase();
-                    String generatedKey = response.substring(0, 32);
-
-                    String ivString = generatedKey.substring(0,16);
-                    IvParameterSpec iv = null;
-                    try {
-                        iv = new IvParameterSpec(ivString.getBytes("UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException(e);
-                    }
-                    Cipher cipher = null;
-                    try {
-                        cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-                    } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-                        throw new RuntimeException(e);
-                    }
-                    try {
-                        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(generatedKey.getBytes(), "AES"), iv);
-                    } catch (InvalidKeyException | InvalidAlgorithmParameterException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    byte[] decodedData = Base64.getDecoder().decode(encData);
-                    byte[] decValue = null;
-                    try {
-                        decValue = cipher.doFinal(decodedData);
-                    } catch (IllegalBlockSizeException | BadPaddingException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(convert(new String(decValue)));
+                    return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(convert(parsedEncDataValue));
                 });
     }
 
