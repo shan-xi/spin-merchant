@@ -27,7 +27,7 @@ public class MerchantHandler {
     private static final Logger log = LoggerFactory.getLogger(MerchantHandler.class);
 
     public Mono<ServerResponse> payInCallBack(ServerRequest request) {
-
+        log.info("payInCallBack");
         return request.formData()
                 .flatMap(formData -> {
                     String payId = formData.getFirst("PAY_ID");
