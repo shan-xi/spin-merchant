@@ -18,9 +18,9 @@ import java.util.Base64;
 public class EncDataUtil {
 
     public static String decrypt(String encData) throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
-        String payId = "1001340526093022";
+        String payId = "1000140627123003";
         String salt = "473531b173db4371";
-        String keySalt = "cd9ee8b0395f4177";
+        String keySalt = "2c6ece3ac5364224";
 
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         messageDigest.update((keySalt + payId).getBytes());

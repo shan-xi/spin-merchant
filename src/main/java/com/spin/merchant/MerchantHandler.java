@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -33,8 +34,8 @@ public class MerchantHandler {
                     String payId = formData.getFirst("PAY_ID");
                     String encData = formData.getFirst("ENCDATA");
 
-                    System.out.println("Received payId: " + payId);
-                    System.out.println("Received encData: " + encData);
+                    log.info("Received payId: {}", payId);
+                    log.info("Received encData: {}", encData);
 
                     String parsedEncDataValue = "";
                     try {
@@ -45,6 +46,14 @@ public class MerchantHandler {
                         throw new RuntimeException(e);
                     }
                     return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(convert(parsedEncDataValue));
+                });
+    }
+
+    public Mono<ServerResponse> payOutCallBack(ServerRequest request) {
+        log.info("payOutCallBack");
+        return request.formData()
+                .flatMap(formData -> {
+                    return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue("this is payOutCallBack");
                 });
     }
 

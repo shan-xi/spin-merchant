@@ -26,3 +26,4 @@ build/
 .gradle/
 .idea/
 keystore.p12
+keystore.p12_bk

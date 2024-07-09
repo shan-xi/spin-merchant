@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Merchant Hosted Payment Page</title>
+</head>
+<body>
+<h1 th:text="${message}"></h1>
+<div>
+    <form id="paymentForm" action="http://localhost:8080/pgui/jsp/merchantPaymentInit" method="post">
+        <label>PAY_ID:</label>
+        <input type="text" name="PAY_ID" value="1000140627123003"><br>
+        <label>ENCDATA:</label>
+        <input type="text" name="ENCDATA"><br>
+        <button type="submit">Pay</button>
+    </form>
+</div>
+</body>
+</html>
