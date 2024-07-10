@@ -18,14 +18,11 @@ import java.util.Base64;
 public class EncDataUtil {
 
     public static String decrypt(String encData) throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
-        String payId = "1000140627123003";
-        String salt = "473531b173db4371";
-        String keySalt = "2c6ece3ac5364224";
-
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-        messageDigest.update((keySalt + payId).getBytes());
-        String hexString = new String(Hex.encodeHex(messageDigest.digest())).toUpperCase();
-        String generatedKey = hexString.substring(0, 32);
+//        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+//        messageDigest.update((keySalt + payId).getBytes());
+//        String hexString = new String(Hex.encodeHex(messageDigest.digest())).toUpperCase();
+//        String generatedKey = hexString.substring(0, 32);
+        String generatedKey = Config.apiKey;
 
         String ivString = generatedKey.substring(0,16);
         IvParameterSpec iv = new IvParameterSpec(ivString.getBytes("UTF-8"));

@@ -6,9 +6,9 @@
 <body>
 <h1 th:text="${message}"></h1>
 <div>
-    <form id="paymentForm" action="http://localhost:8080/pgui/jsp/merchantPaymentInit" method="post">
+    <form id="paymentForm" th:action="${payInUrl}" method="post">
         <label>PAY_ID:</label>
-        <input type="text" name="PAY_ID" value="1000140627123003"><br>
+        <input type="text" name="PAY_ID" th:value="${payId}"><br>
         <label>ENCDATA:</label>
         <input type="text" name="ENCDATA"><br>
         <button type="submit">Pay</button>
