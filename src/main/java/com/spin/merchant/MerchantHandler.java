@@ -34,8 +34,7 @@ public class MerchantHandler {
                     String payId = formData.getFirst("PAY_ID");
                     String encData = formData.getFirst("ENCDATA");
 
-                    log.info("Received payId: {}", payId);
-                    log.info("Received encData: {}", encData);
+                    log.info("Received payId: {}, encData:{}", payId, encData);
 
                     String parsedEncDataValue = "";
                     try {
@@ -47,6 +46,29 @@ public class MerchantHandler {
                     }
                     return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(convert(parsedEncDataValue));
                 });
+    }
+
+    public Mono<ServerResponse> payInCallBackGet(ServerRequest request) {
+        log.info("payInCallBackGet");
+
+        // Extracting query parameters
+        String payId = request.queryParam("PAY_ID").orElse("");
+        String encData = request.queryParam("ENCDATA").orElse("");
+
+        log.info("Received payId: {}, encData:{}", payId, encData);
+
+        String parsedEncDataValue = "";
+        try {
+            parsedEncDataValue = EncDataUtil.decrypt(encData);
+        } catch (IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException |
+                 NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException |
+                 InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(convert(parsedEncDataValue));
     }
 
     public Mono<ServerResponse> payOutCallBack(ServerRequest request) {

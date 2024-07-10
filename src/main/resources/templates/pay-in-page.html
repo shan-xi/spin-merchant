@@ -5,13 +5,44 @@
 </head>
 <body>
 <h1 th:text="${message}"></h1>
-<div>
-    <form id="paymentForm" th:action="${payInUrl}" method="post">
+<div style="margin-bottom:20px">
+    <label>UP</label>
+    <form id="paymentFormUP" th:action="${payInUrl}" method="post">
         <label>PAY_ID:</label>
         <input type="text" name="PAY_ID" th:value="${payId}"><br>
         <label>ENCDATA:</label>
-        <input type="text" name="ENCDATA" th:value="${encData}"><br>
-        <button type="submit">Pay</button>
+        <input type="text" size="150"  name="ENCDATA" th:value="${encDataForUP}"><br>
+        <button type="submit">Pay In UP</button>
+    </form>
+</div>
+<div style="margin-bottom:20px">
+    <label>NB</label>
+    <form id="paymentFormNB" th:action="${payInUrl}" method="post">
+        <label>PAY_ID:</label>
+        <input type="text" name="PAY_ID" th:value="${payId}"><br>
+        <label>ENCDATA:</label>
+        <input type="text" size="150"  name="ENCDATA" th:value="${encDataForNB}"><br>
+        <button type="submit">Pay In NB</button>
+    </form>
+</div>
+<div style="margin-bottom:20px">
+    <label>CARD</label>
+    <form id="paymentFormCARD" th:action="${payInUrl}" method="post">
+        <label>PAY_ID:</label>
+        <input type="text" name="PAY_ID" th:value="${payId}"><br>
+        <label>ENCDATA:</label>
+        <input type="text" size="150"  name="ENCDATA" th:value="${encDataForCARD}"><br>
+        <button type="submit">Pay In CARD</button>
+    </form>
+</div>
+<div style="margin-bottom:20px">
+    <label>WL</label>
+    <form id="paymentFormWL" th:action="${payInUrl}" method="post">
+        <label>PAY_ID:</label>
+        <input type="text" name="PAY_ID" th:value="${payId}"><br>
+        <label>ENCDATA:</label>
+        <input type="text" size="150" name="ENCDATA" th:value="${encDataForWL}"><br>
+        <button type="submit">Pay In WL</button>
     </form>
 </div>
 </body>

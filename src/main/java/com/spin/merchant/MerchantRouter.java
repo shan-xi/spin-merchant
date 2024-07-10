@@ -16,6 +16,10 @@ public class MerchantRouter {
         return RouterFunctions.route(POST("/payInCallBack").and(accept(MediaType.APPLICATION_FORM_URLENCODED)), merchantHandler::payInCallBack);
     }
     @Bean
+    public RouterFunction<ServerResponse> payInCallBackGet(MerchantHandler merchantHandler) {
+        return RouterFunctions.route(GET("/payInCallBackGet").and(accept(MediaType.APPLICATION_FORM_URLENCODED)), merchantHandler::payInCallBackGet);
+    }
+    @Bean
     public RouterFunction<ServerResponse> payOutCallBack(MerchantHandler merchantHandler) {
         return RouterFunctions.route(POST("/payOutCallBack").and(accept(MediaType.APPLICATION_FORM_URLENCODED)), merchantHandler::payOutCallBack);
     }

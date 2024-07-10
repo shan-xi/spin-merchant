@@ -13,6 +13,6 @@ public class Config {
     public static String apiKey = "1A861AD9FBAEBA9A26A58C6FDB5A2E9D";
 
     // env
-//    public static String payInUrl = "http://localhost:8080/pgui/jsp/merchantPaymentInit";
-    public static String payInUrl = "https://bpgate-preqa.pay10.com/pgui/jsp/merchantPaymentInit";
+    public static String payInUrl = "http://localhost:8080/pgui/jsp/merchantPaymentInit";
+//    public static String payInUrl = "https://bpgate-preqa.pay10.com/pgui/jsp/merchantPaymentInit";
 }
