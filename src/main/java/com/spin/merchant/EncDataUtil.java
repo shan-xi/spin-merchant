@@ -33,4 +33,24 @@ public class EncDataUtil {
         byte[] decValue = cipher.doFinal(decodedData);
         return new String(decValue);
     }
+
+    public static String encrypt(String encString) throws NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+
+//        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+//        messageDigest.update((keySalt + payId).getBytes());
+//        String response = new String(Hex.encodeHex(messageDigest.digest(), false));
+//        String generatedKey = response.substring(0, 32);
+        String generatedKey = Config.apiKey;
+
+        String ivString = generatedKey.substring(0, 16);
+        System.out.println(ivString);
+        IvParameterSpec iv = new IvParameterSpec(ivString.getBytes("UTF-8"));
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(generatedKey.getBytes(), "AES"), iv);
+
+        byte[] encValue = cipher.doFinal(encString.getBytes("UTF-8"));
+
+        Base64.Encoder base64Encoder = Base64.getEncoder().withoutPadding();
+        return base64Encoder.encodeToString(encValue);
+    }
 }
