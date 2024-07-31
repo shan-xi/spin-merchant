@@ -39,6 +39,7 @@ public class MerchantHandler {
                     String parsedEncDataValue = "";
                     try {
                         parsedEncDataValue = EncDataUtil.decrypt(encData);
+                        System.out.println(parsedEncDataValue);
                     } catch (IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException |
                              NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException |
                              InvalidKeyException e) {
@@ -60,6 +61,7 @@ public class MerchantHandler {
         String parsedEncDataValue = "";
         try {
             parsedEncDataValue = EncDataUtil.decrypt(encData);
+            System.out.println(parsedEncDataValue);
         } catch (IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException |
                  NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException |
                  InvalidKeyException e) {
